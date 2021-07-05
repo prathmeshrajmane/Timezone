@@ -1,11 +1,18 @@
 ---
-  - hosts : all
-    remote_user : root
-    tasks:
-        - name: Set Asia/Kolkata timezone
-          timezone: name=Asia/Kolkata
-          become: yes
-        - name: Timezone
-          shell: timedatectl
-          register: ps
-        - debug: var=ps.stdout_lines
+- hosts: all 
+  become: True
+  tasks:
+    - name: Install packages
+      yum:
+        name: "httpd"
+        state: "present"
+    - name: Start Apache server
+      service:
+        name: httpd
+        state: started
+        enabled: True
+    - name: Deploy static website
+      copy:
+        src: index.html
+        dest: /var/www/html/
+...
